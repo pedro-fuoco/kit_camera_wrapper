@@ -42,7 +42,7 @@ colcon build --packages-select kit_camera_wrapper
 Fique de olho em possiveis erros nesse processo e realize debug se necessario.
 
 ### PiCamera
-Esse pacote pega a camera padrão do dispositivo, instanciada em `/dev/ttyUSB0`. Para que a PiCamera seja reconhecida e possa ser acessada nesse endereço, é necessario seguir as seguintes instruções:
+Esse pacote pega a cameras instanciada em `/dev/ttyUSB*`. Para que a PiCamera seja reconhecida e possa ser acessada em um desses endereços, é necessario seguir as seguintes instruções:
 
 - Atualiza o sistema
 ```bash

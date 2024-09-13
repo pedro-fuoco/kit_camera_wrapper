@@ -94,17 +94,17 @@ class CameraNode(Node):
         self.cap.release()
 
 def main(args=None):
-    rclpy.init(args=args)
-    camera_wrapper = CameraNode()
+    rclpy.init(args=args) # Inicializa o cliente ROS 2
+    camera_wrapper = CameraNode() # Cria o node da camera
 
     try:
-        # Mantém o nó ativo para continuar capturando e publicando imagens
+        # Mantém o node ativo para continuar capturando e publicando imagens
         rclpy.spin(camera_wrapper)
     except KeyboardInterrupt:
         # Loga uma mensagem ao encerrar o node
         camera_wrapper.get_logger().info('Shutting down camera driver...')
     finally:
-        # Destrói o node e finaliza o ROS 2
+        # Destrói o node e finaliza o cliente ROS 2
         camera_wrapper.destroy_node()
         rclpy.shutdown()
 
