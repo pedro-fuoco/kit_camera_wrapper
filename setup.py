@@ -19,8 +19,8 @@ setup(
     zip_safe=True,
     maintainer='pedro-fuoco',
     maintainer_email='pedrofuoco6@gmail.com',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    description='Camera wrapper package for Kit de Robotica',
+    license='MIT',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
