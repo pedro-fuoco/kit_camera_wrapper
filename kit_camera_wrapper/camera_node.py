@@ -4,8 +4,9 @@ import cv2
 from cv_bridge import CvBridge
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import CameraInfo, Image
+from sensor_msgs.msg import CameraInfo, Image, CompressedImage
 
+from rclpy.serialization import serialize_message
 
 class CameraNode(Node):
 
@@ -17,6 +18,7 @@ class CameraNode(Node):
         # Os nomes dos tópicos seguem os padrões encontrados em http://wiki.ros.org/ROS/Patterns/Conventions
         # A fila dos topicos é limitada em 10 elementos... Isso será relevante caso os subscritores sejam mais lentos que os publicadores
         self.image_publisher = self.create_publisher(Image, 'kit/camera/image_raw', 10)
+        self.compressed_image_publisher = self.create_publisher(CompressedImage, 'kit/camera/image_compressed', 10)
         self.info_publisher = self.create_publisher(CameraInfo, 'kit/camera/camera_info', 10)
         
         # Declara os ROS params com valores padrão
@@ -65,6 +67,12 @@ class CameraNode(Node):
         # Caso algum tipo de distorção seja aplicado na imagem da câmera, ela deve ser descrita aqui
         self.camera_info.distortion_model = 'none'
 
+    def get_message_size(self, msg):
+        # Serialize the message to a byte array
+        serialized_msg = serialize_message(msg)
+        # Return the size of the serialized message in bytes
+        return len(serialized_msg)
+
     # Função de callback do timer
     def timer_callback(self):
         # Lê um frame do objeto de captura
@@ -83,10 +91,21 @@ class CameraNode(Node):
         # Publica a mensagem da imagem
         self.image_publisher.publish(image_msg)
 
+        # Converte o frame capturado em uma mensagem de imagem ROS com compressão
+        compressed_img_msg = self.bridge.cv2_to_compressed_imgmsg(frame)
+        ## Popula o header da mensagem ROS da imagem comprimida
+        compressed_img_msg.header.stamp = self.get_clock().now().to_msg()
+        compressed_img_msg.header.frame_id = 'camera_link'
+        # Publica a mensagem da imagem com compressão
+        self.compressed_image_publisher.publish(compressed_img_msg)
+
+
         # Popula o header da mensagem ROS de especificações da camera
         self.camera_info.header.stamp = self.get_clock().now().to_msg()
         # Publica a mensagem das especificações da camera
         self.info_publisher.publish(self.camera_info)
+
+        self.get_logger().warn(f"Original size: {self.get_message_size(image_msg)}. Compressed size: {self.get_message_size(compressed_img_msg)}.")
 
     def __del__(self):
         # Libera os recursos da camera caso esse objeto seja destruido
