@@ -94,14 +94,13 @@ class CameraNode(Node):
         # Converte o frame capturado em uma mensagem de imagem ROS com compressão
         compressed_img_msg = self.bridge.cv2_to_compressed_imgmsg(frame)
         ## Popula o header da mensagem ROS da imagem comprimida
-        compressed_img_msg.header.stamp = self.get_clock().now().to_msg()
-        compressed_img_msg.header.frame_id = 'camera_link'
+        compressed_img_msg.header = image_msg.header
         # Publica a mensagem da imagem com compressão
         self.compressed_image_publisher.publish(compressed_img_msg)
 
 
         # Popula o header da mensagem ROS de especificações da camera
-        self.camera_info.header.stamp = self.get_clock().now().to_msg()
+        self.camera_info.header.stamp = image_msg.header.stamp
         # Publica a mensagem das especificações da camera
         self.info_publisher.publish(self.camera_info)
 
