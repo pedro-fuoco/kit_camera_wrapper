@@ -2,5 +2,5 @@ kit_camera:
   ros__parameters:
     camera_index: 0
     FPS: 15
-    frame_width: 640
-    frame_height: 480
+    frame_width: 320
+    frame_height: 240

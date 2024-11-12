@@ -24,8 +24,8 @@ class CameraNode(Node):
         # Declara os ROS params com valores padrão
         self.declare_parameter('camera_index', 0)
         self.declare_parameter('FPS', 15)
-        self.declare_parameter('frame_width', 640)
-        self.declare_parameter('frame_height', 480)
+        self.declare_parameter('frame_width', 320)
+        self.declare_parameter('frame_height', 240)
 
         # Obtém os valores dos ROS params, caso o node tenha sido inicializado com valores customizados
         camera_index = self.get_parameter('camera_index').get_parameter_value().integer_value
